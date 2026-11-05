@@ -1,0 +1,116 @@
+
+<odoo>
+
+    <record id="view_equipment_list" model="ir.ui.view">
+        <field name="name">office.equipment.list</field>
+        <field name="model">office.equipment.asset</field>
+        <field name="arch" type="xml">
+            <list string="Office Equipment"
+                  decoration-danger="is_overdue">
+                <field name="name"/>
+                <field name="asset_code"/>
+                <field name="category"/>
+                <field name="assigned_to"/>
+                <field name="due_date"/>
+                <field name="state"/>
+                <field name="is_overdue"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_equipment_form" model="ir.ui.view">
+        <field name="name">office.equipment.form</field>
+        <field name="model">office.equipment.asset</field>
+        <field name="arch" type="xml">
+            <form string="Office Equipment">
+
+                <header>
+                    <button name="action_mark_returned"
+                            string="Mark as Returned"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state != 'assigned'"/>
+
+                    <field name="state"
+                           widget="statusbar"
+                           options="{'clickable': True}"/>
+                    
+                </header>
+
+                <sheet>
+
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group>
+                            <field name="asset_code"/>
+                            <field name="category"/>
+                            <field name="assigned_to"/>
+                        </group>
+
+                        <group>
+                            <field name="checkout_date"/>
+                            <field name="due_date"/>
+                            <field name="return_date"/>
+                            <field name="is_overdue"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Notes">
+                            <field name="notes"/>
+                        </page>
+                    </notebook>
+
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_equipment_search" model="ir.ui.view">
+        <field name="name">office.equipment.search</field>
+        <field name="model">office.equipment.asset</field>
+        <field name="arch" type="xml">
+            <search string="Search Equipment">
+                <field name="name"/>
+                <field name="asset_code"/>
+                <field name="assigned_to"/>
+
+                <filter name="available"
+                        string="Available"
+                        domain="[('state', '=', 'available')]"/>
+
+                <filter name="assigned"
+                        string="Assigned"
+                        domain="[('state', '=', 'assigned')]"/>
+
+                <filter name="overdue"
+                        string="Overdue"
+                        domain="[('is_overdue', '=', True)]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_equipment" model="ir.actions.act_window">
+        <field name="name">Equipment</field>
+        <field name="res_model">office.equipment.asset</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_equipment_search"/>
+    </record>
+
+    <menuitem id="menu_equipment_root"
+          name="Equipment Management"
+          action="action_equipment"
+          sequence="10"/>
+
+    <menuitem id="menu_equipment"
+              name="Equipment"
+              parent="menu_equipment_root"
+              action="action_equipment"
+              sequence="1"/>
+
+</odoo>
